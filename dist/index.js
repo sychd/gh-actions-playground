@@ -8293,8 +8293,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __importDefault(__nccwpck_require__(2186));
 const github_1 = __importDefault(__nccwpck_require__(5438));
+core_1.default.debug('hello -1');
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        core_1.default.debug('hello 0');
         // `who-to-greet` input defined in action metadata file
         const nameToGreet = core_1.default.getInput('who-to-greet');
         console.log(`Hello ${nameToGreet}!`);
@@ -8305,6 +8307,7 @@ const github_1 = __importDefault(__nccwpck_require__(5438));
         console.log(`The event payload: ${payload}`);
     }
     catch (error) {
+        core_1.default.debug('hello 1');
         core_1.default.setFailed(error.message);
     }
 }))();
