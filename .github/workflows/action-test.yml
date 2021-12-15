@@ -22,6 +22,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: "sychd/gh-actions-playground"
+          token: "${{ github.token }}"
+          fetch-depth: 0
+          ref: master
       - name: Hello world action step
         uses: ./ # Uses an action in the root directory
         id: hello
