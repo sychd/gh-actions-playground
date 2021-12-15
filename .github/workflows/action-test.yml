@@ -1,0 +1,30 @@
+# Added 10/20/2021
+name: Action test for development
+
+# Run only when a PR is opened
+on:
+  pull_request:
+    types: [opened]
+    branches-ignore:
+      - "dependabot-npm_and_yarn-*"
+
+permissions: read-all
+
+jobs:
+  update_pr:
+    runs-on: ubuntu-latest
+    # Only give PR write permission to the Github token, since we're using a third party action
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idpermissions
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Hello world action step
+        uses: ./ # Uses an action in the root directory
+        id: hello
+        with:
+          who-to-greet: 'Mona the Octocat'
+      # Use the output from the `hello` step
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
