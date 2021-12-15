@@ -7,6 +7,7 @@ import { getOctokitOptions } from "@actions/github/lib/utils";
     const token = core.getInput("repo-token");
     const { owner, repo } = github.context.repo;
     const prNumber = getPrNumber();
+    console.log(core, 'hello');
     if (!prNumber) {
       core.setFailed("Could not get pull request number from context");
     }

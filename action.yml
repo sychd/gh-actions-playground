@@ -5,6 +5,12 @@ inputs:
     description: 'Who to greet'
     required: true
     default: 'World'
+  repo-token:
+    description: 'Repository token'
+    required: true
+  fail-on-pattern-missing:
+    description: 'Should action fail when pattern matching found nothing'
+    required: false
 outputs:
   time: # id of output
     description: 'The time we greeted you'

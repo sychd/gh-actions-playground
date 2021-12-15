@@ -8299,6 +8299,7 @@ const utils_1 = __nccwpck_require__(3030);
         const token = core_1.default.getInput("repo-token");
         const { owner, repo } = github_1.default.context.repo;
         const prNumber = getPrNumber();
+        console.log(core_1.default, 'hello');
         if (!prNumber) {
             core_1.default.setFailed("Could not get pull request number from context");
         }
