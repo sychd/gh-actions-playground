@@ -8,23 +8,18 @@ on:
     branches-ignore:
       - "dependabot-npm_and_yarn-*"
 
-permissions: read-all
+#permissions: read-all
 
 jobs:
   update_pr:
     runs-on: ubuntu-latest
     # Only give PR write permission to the Github token, since we're using a third party action
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idpermissions
-    permissions:
-      pull-requests: write
+#    permissions:
+#      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          repository: "sychd/gh-actions-playground"
-          token: "${{ github.token }}"
-          fetch-depth: 0
-          ref: master
       - name: Hello world action step
         uses: ./ # Uses an action in the root directory
         id: hello
