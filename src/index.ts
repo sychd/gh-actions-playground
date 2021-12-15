@@ -2,9 +2,12 @@ import core from "@actions/core";
 import github from "@actions/github";
 import { getOctokitOptions } from "@actions/github/lib/utils";
 
+core.debug('hello -1');
+
 (async () => {
 
   try {
+    core.debug('hello 0');
     // `who-to-greet` input defined in action metadata file
     const nameToGreet = core.getInput('who-to-greet');
     console.log(`Hello ${nameToGreet}!`);
@@ -14,6 +17,7 @@ import { getOctokitOptions } from "@actions/github/lib/utils";
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     console.log(`The event payload: ${payload}`);
   } catch (error: any) {
+    core.debug('hello 1');
     core.setFailed(error.message);
   }
 })();
