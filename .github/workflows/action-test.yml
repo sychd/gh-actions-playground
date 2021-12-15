@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     # Only give PR write permission to the Github token, since we're using a third party action
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idpermissions
-#    permissions:
-#      pull-requests: write
+    permissions:
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2
