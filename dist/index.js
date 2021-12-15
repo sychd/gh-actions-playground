@@ -8293,34 +8293,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __importDefault(__nccwpck_require__(2186));
 const github_1 = __importDefault(__nccwpck_require__(5438));
-const utils_1 = __nccwpck_require__(3030);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const token = core_1.default.getInput("repo-token");
-        const { owner, repo } = github_1.default.context.repo;
-        const prNumber = getPrNumber();
-        console.log(core_1.default, 'hello');
-        if (!prNumber) {
-            core_1.default.setFailed("Could not get pull request number from context");
-        }
-        const octokit = (0, utils_1.getOctokitOptions)(token);
-        const response = yield octokit.pulls.get({
-            owner: owner,
-            repo: repo,
-            pull_number: prNumber,
-        });
-        console.log({ branchName: response.data.head.ref });
         // `who-to-greet` input defined in action metadata file
-        const nameToGreet = core_1.default.getInput("who-to-greet");
+        const nameToGreet = core_1.default.getInput('who-to-greet');
         console.log(`Hello ${nameToGreet}!`);
-        const time = new Date().toTimeString();
+        const time = (new Date()).toTimeString();
         core_1.default.setOutput("time", time);
         // Get the JSON webhook payload for the event that triggered the workflow
         const payload = JSON.stringify(github_1.default.context.payload, undefined, 2);
         console.log(`The event payload: ${payload}`);
     }
     catch (error) {
-        core_1.default.setFailed(error === null || error === void 0 ? void 0 : error.message);
+        core_1.default.setFailed(error.message);
     }
 }))();
 function getPrNumber() {
