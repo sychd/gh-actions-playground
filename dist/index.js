@@ -8307,47 +8307,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(2186)); // some build issues with straight default import so aliases used
-const github = __importStar(__nccwpck_require__(5438)); // some build issues with straight default import so aliases used
-// import { getOctokitOptions } from "@actions/github/lib/utils";
+// some build issues with default imports, so aliases used as a workaround
+const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const token = core.getInput("repo-token");
-        const { owner, repo } = github.context.repo;
-        const prNumber = getPrNumber();
-        console.log(core, 'hello');
-        core.debug(JSON.stringify(github.context.payload.pull_request));
-        if (!prNumber) {
-            core.setFailed("Could not get pull request number from context");
-        }
-        // const octokit = getOctokitOptions(token);
-        //
-        // const response = await octokit.pulls.get({
-        //   owner: owner,
-        //   repo: repo,
-        //   pull_number: prNumber,
-        // });
-        // console.log({branchName: response.data.head.ref});
-        // `who-to-greet` input defined in action metadata file
-        const nameToGreet = core.getInput("who-to-greet");
-        console.log(`Hello ${nameToGreet}!`);
-        const time = new Date().toTimeString();
-        core.setOutput("time", time);
-        // Get the JSON webhook payload for the event that triggered the workflow
-        const payload = JSON.stringify(github.context.payload, undefined, 2);
-        console.log(`The event payload: ${payload}`);
+        const details = getPRDetails();
+        const inputs = getInputs();
+        core.info(`PR Details: ${JSON.stringify(details)}`);
+        core.info(`Inputs: ${JSON.stringify(inputs)}`);
     }
     catch (error) {
-        console.log(132, error);
         core.setFailed(error === null || error === void 0 ? void 0 : error.message);
     }
 }))();
-function getPrNumber() {
-    const pullRequest = github.context.payload.pull_request;
-    if (!pullRequest) {
-        return undefined;
+function getInputs() {
+    return {
+        token: core.getInput("repo-token"),
+        shouldFailOnMismatch: core.getInput("repo-token"),
+        headBranchRegex: core.getInput("head-branch-regex"),
+        titleTemplate: core.getInput("title-template"),
+        bodyTemplate: core.getInput("body-template"),
+    };
+}
+function getPRDetails() {
+    const { payload: { pull_request: pr }, } = github.context;
+    if (!pr) {
+        return;
     }
-    return pullRequest.number;
+    return {
+        number: pr.number,
+        body: pr.body || "",
+        baseBranchName: pr.head.ref,
+    };
 }
 
 

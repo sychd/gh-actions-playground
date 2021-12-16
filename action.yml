@@ -1,15 +1,20 @@
-name: 'Hello World!!!'
-description: 'Greet someone and record the time'
+name: 'PR updater'
+description: 'Allows to update PR`s data: name, description'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
   repo-token:
     description: 'Repository token'
     required: true
-  fail-on-pattern-missing:
+  fail-on-pattern-mismatch:
     description: 'Should action fail when pattern matching found nothing'
+    required: false
+  head-branch-regex:
+    description: 'Which part should be extracted from base branch name and reused in templates.'
+    required: false
+  title-template:
+    description: 'Title template where matched text from branch gets substituted in. Allowed tokens: %headbranch%'
+    required: false
+  body-template:
+    description: 'Body (description) template where matched text from branch gets substituted in. Allowed tokens: %headbranch%'
     required: false
 outputs:
   time: # id of output

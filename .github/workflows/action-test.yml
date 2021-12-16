@@ -1,7 +1,5 @@
-# Added 10/20/2021
-name: Action test for development
+name: Simple PR update
 
-# Run only when a PR is opened
 on:
   pull_request:
     types: [opened, reopened] #reopened for faster testing
@@ -9,17 +7,13 @@ on:
       - "dependabot-npm_and_yarn-*"
 
 jobs:
-  update_pr:
+  update_pull_request:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Hello world action step
+      - name: Updates Pull Request information
         uses: ./
-        id: hello
         with:
           repo-token: "${{ github.token }}"
-          who-to-greet: 'Mona the Octocat'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+          head-branch-regex: "(CW|cw)-[0-9]+"
