@@ -36,20 +36,7 @@ const HEAD_BRANCH_PLACEHOLDER = "%headbranch%";
           ? inputs.bodyTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
           : inputs.bodyTemplate;
 
-      request.setBody(injectedStr.concat(details?.body));
-    }
-
-    if (inputs.bodyTemplate) {
-      const matchedHeaderStr = getMatch(
-        details.baseBranchName,
-        inputs.headBranchRegex,
-        inputs.shouldFailOnMismatch
-      );
-      const injectedStr = matchedHeaderStr
-        ? inputs.titleTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
-        : "";
-
-      request.setTitle(injectedStr.concat(details?.title));
+      request.setBody(injectedStr.concat("\n").concat(details?.body));
     }
 
     await updatePR(inputs.token, request.build());
