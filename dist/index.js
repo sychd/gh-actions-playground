@@ -8316,11 +8316,6 @@ const github = __importStar(__nccwpck_require__(5438));
         const inputs = getInputs();
         core.info(`PR Details: ${JSON.stringify(details, null, 2)}`);
         core.info(`Inputs: ${JSON.stringify(inputs, null, 2)}`);
-        core.info(`test:
-    ${inputs.shouldFailOnMismatch === undefined},
-    ${inputs.shouldFailOnMismatch === null},
-    ${inputs.shouldFailOnMismatch === false},
-    ${inputs.shouldFailOnMismatch === ""}`);
     }
     catch (error) {
         core.setFailed(error === null || error === void 0 ? void 0 : error.message);
@@ -8329,7 +8324,7 @@ const github = __importStar(__nccwpck_require__(5438));
 function getInputs() {
     return {
         token: core.getInput("repo-token"),
-        shouldFailOnMismatch: core.getInput("fail-on-pattern-mismatch"),
+        shouldFailOnMismatch: !!core.getInput("fail-on-pattern-mismatch"),
         headBranchRegex: core.getInput("head-branch-regex"),
         titleTemplate: core.getInput("title-template"),
         bodyTemplate: core.getInput("body-template"),
