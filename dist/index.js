@@ -8316,6 +8316,7 @@ const utils_1 = __nccwpck_require__(3030);
         const { owner, repo } = github.context.repo;
         const prNumber = getPrNumber();
         console.log(core, 'hello');
+        core.debug(JSON.stringify(github.context.payload.pull_request));
         if (!prNumber) {
             core.setFailed("Could not get pull request number from context");
         }
