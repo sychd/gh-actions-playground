@@ -8,10 +8,10 @@ const HEADER_PLACEHOLDER = "%headbranch%";
   try {
     const details = getPRDetails();
     const inputs = getInputs();
+    const request = getRequestBuilder();
+
     core.info(`PR Details: ${JSON.stringify(details, null, 2)}`);
     core.info(`Inputs: ${JSON.stringify(inputs, null, 2)}`);
-
-    const request = getRequestBuilder();
 
     if (inputs.titleTemplate) {
       const matchedHeaderStr = getMatch(
@@ -19,9 +19,16 @@ const HEADER_PLACEHOLDER = "%headbranch%";
         inputs.headBranchRegex,
         inputs.shouldFailOnMismatch
       );
-      const injectedStr = inputs.titleTemplate.replace(HEADER_PLACEHOLDER, matchedHeaderStr).trim();
+      const injectedStr = matchedHeaderStr
+        ? inputs.titleTemplate.replace(HEADER_PLACEHOLDER, matchedHeaderStr)
+        : "";
 
-      request.setTitle(injectedStr ? injectedStr.concat(details?.title) : details?.title);
+      request.setTitle(injectedStr.concat(details?.title));
+      core.info(
+        `trail: ${injectedStr}, ${matchedHeaderStr}, ${injectedStr.concat(
+          details?.title
+        )}, ${request.build()}`
+      );
     }
 
     const octokit = github.getOctokit(inputs.token);
