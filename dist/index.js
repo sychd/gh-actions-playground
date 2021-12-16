@@ -8325,12 +8325,8 @@ const HEADER_PLACEHOLDER = "%headbranch%";
                 request.setTitle(injectedStr ? injectedStr.concat(details === null || details === void 0 ? void 0 : details.title) : details === null || details === void 0 ? void 0 : details.title);
             }
             const octokit = github.getOctokit(inputs.token);
-            const response = yield octokit.rest.pulls.update({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                pull_number: github.context.payload.pull_request.number,
-                title: "hello",
-            });
+            core.info(`Request: ${JSON.stringify(request.build(), null, 2)}`);
+            const response = yield octokit.rest.pulls.update(request.build());
             core.info(`Response: ${response.status}`);
             if (response.status !== 200) {
                 core.error("Updating the pull request has failed");
