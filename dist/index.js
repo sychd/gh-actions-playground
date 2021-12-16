@@ -8310,17 +8310,60 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 // some build issues with default imports, so aliases used as a workaround
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const details = getPRDetails();
-        const inputs = getInputs();
-        core.info(`PR Details: ${JSON.stringify(details, null, 2)}`);
-        core.info(`Inputs: ${JSON.stringify(inputs, null, 2)}`);
+const HEADER_PLACEHOLDER = "%headbranch%";
+(function main() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const details = getPRDetails();
+            const inputs = getInputs();
+            core.info(`PR Details: ${JSON.stringify(details, null, 2)}`);
+            core.info(`Inputs: ${JSON.stringify(inputs, null, 2)}`);
+            const request = getRequestBuilder();
+            if (inputs.titleTemplate) {
+                const matchedHeaderStr = getMatch(details === null || details === void 0 ? void 0 : details.baseBranchName, inputs.headBranchRegex, inputs.shouldFailOnMismatch);
+                const injectedStr = inputs.titleTemplate.replace(HEADER_PLACEHOLDER, matchedHeaderStr).trim();
+                request.setTitle(injectedStr ? injectedStr.concat(details === null || details === void 0 ? void 0 : details.title) : details === null || details === void 0 ? void 0 : details.title);
+            }
+            const octokit = github.getOctokit(inputs.token);
+            const response = yield octokit.rest.pulls.update(request.build());
+            core.info(`Response: ${response.status}`);
+            if (response.status !== 200) {
+                core.error("Updating the pull request has failed");
+            }
+        }
+        catch (error) {
+            core.setFailed(error === null || error === void 0 ? void 0 : error.message);
+        }
+    });
+})();
+function getRequestBuilder() {
+    const request = {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        pull_number: github.context.payload.pull_request.number,
+    };
+    const obj = {
+        setTitle: (title) => {
+            request.title = title;
+            return obj;
+        },
+        build: () => request,
+    };
+    return obj;
+}
+function getMatch(str, regex, failOnMismatch) {
+    if (regex) {
+        const [baseMatch = ""] = str.match(new RegExp(regex)) || [];
+        if (baseMatch) {
+            core.info(`Matched text: ${baseMatch}`);
+        }
+        else if (failOnMismatch) {
+            core.setFailed(`String "${str}" does not match given regex "${regex}"`);
+        }
+        return baseMatch;
     }
-    catch (error) {
-        core.setFailed(error === null || error === void 0 ? void 0 : error.message);
-    }
-}))();
+    return "";
+}
 function getInputs() {
     return {
         token: core.getInput("repo-token"),
@@ -8339,6 +8382,7 @@ function getPRDetails() {
         number: pr.number,
         body: pr.body || "",
         baseBranchName: pr.head.ref,
+        title: pr.title,
     };
 }
 
