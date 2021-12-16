@@ -8,6 +8,8 @@ import { getOctokitOptions } from "@actions/github/lib/utils";
     const { owner, repo } = github.context.repo;
     const prNumber = getPrNumber();
     console.log(core, 'hello');
+    core.debug(JSON.stringify(github.context.payload.pull_request));
+
     if (!prNumber) {
       core.setFailed("Could not get pull request number from context");
     }
