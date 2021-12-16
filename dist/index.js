@@ -8329,7 +8329,7 @@ const github = __importStar(__nccwpck_require__(5438));
 function getInputs() {
     return {
         token: core.getInput("repo-token"),
-        shouldFailOnMismatch: core.getInput("repo-token"),
+        shouldFailOnMismatch: core.getInput("fail-on-pattern-mismatch"),
         headBranchRegex: core.getInput("head-branch-regex"),
         titleTemplate: core.getInput("title-template"),
         bodyTemplate: core.getInput("body-template"),
