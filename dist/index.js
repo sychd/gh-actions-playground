@@ -8310,7 +8310,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 // some build issues with default imports, so aliases used as a workaround
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const HEADER_PLACEHOLDER = "%headbranch%";
+// TODO: replace all 'any' types
+// TODO: add tests
+const HEAD_BRANCH_PLACEHOLDER = "%headbranch%";
 (function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -8319,27 +8321,43 @@ const HEADER_PLACEHOLDER = "%headbranch%";
             const request = getRequestBuilder();
             core.info(`PR Details: ${JSON.stringify(details, null, 2)}`);
             core.info(`Inputs: ${JSON.stringify(inputs, null, 2)}`);
+            const matchedHeaderStr = getMatch(details.baseBranchName, inputs.headBranchRegex, inputs.shouldFailOnMismatch);
             if (inputs.titleTemplate) {
-                const matchedHeaderStr = getMatch(details === null || details === void 0 ? void 0 : details.baseBranchName, inputs.headBranchRegex, inputs.shouldFailOnMismatch);
+                const injectedStr = inputs.titleTemplate.includes(HEAD_BRANCH_PLACEHOLDER) && matchedHeaderStr
+                    ? inputs.titleTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
+                    : inputs.titleTemplate;
+                request.setTitle(injectedStr.concat(details === null || details === void 0 ? void 0 : details.title));
+            }
+            if (inputs.bodyTemplate) {
+                const injectedStr = inputs.bodyTemplate.includes(HEAD_BRANCH_PLACEHOLDER) && matchedHeaderStr
+                    ? inputs.bodyTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
+                    : inputs.bodyTemplate;
+                request.setBody(injectedStr.concat(details === null || details === void 0 ? void 0 : details.body));
+            }
+            if (inputs.bodyTemplate) {
+                const matchedHeaderStr = getMatch(details.baseBranchName, inputs.headBranchRegex, inputs.shouldFailOnMismatch);
                 const injectedStr = matchedHeaderStr
-                    ? inputs.titleTemplate.replace(HEADER_PLACEHOLDER, matchedHeaderStr)
+                    ? inputs.titleTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
                     : "";
                 request.setTitle(injectedStr.concat(details === null || details === void 0 ? void 0 : details.title));
-                core.info(`trail: ${injectedStr}, ${matchedHeaderStr}, ${injectedStr.concat(details === null || details === void 0 ? void 0 : details.title)}, ${request.build()}`);
             }
-            const octokit = github.getOctokit(inputs.token);
-            core.info(`Request: ${JSON.stringify(request.build(), null, 2)}`);
-            const response = yield octokit.rest.pulls.update(request.build());
-            core.info(`Response: ${response.status}`);
-            if (response.status !== 200) {
-                core.error("Updating the pull request has failed");
-            }
+            yield updatePR(inputs.token, request.build());
         }
         catch (error) {
             core.setFailed(error === null || error === void 0 ? void 0 : error.message);
         }
     });
 })();
+function updatePR(token, payload) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const octokit = github.getOctokit(token);
+        const response = yield octokit.rest.pulls.update(payload);
+        core.info(`Response: ${response.status}`);
+        if (response.status !== 200) {
+            core.error("Updating the pull request has failed");
+        }
+    });
+}
 function getRequestBuilder() {
     const request = {
         owner: github.context.repo.owner,
@@ -8349,6 +8367,10 @@ function getRequestBuilder() {
     const obj = {
         setTitle: (title) => {
             request.title = title;
+            return obj;
+        },
+        setBody: (body) => {
+            request.body = body;
             return obj;
         },
         build: () => request,
@@ -8380,7 +8402,7 @@ function getInputs() {
 function getPRDetails() {
     const { payload: { pull_request: pr }, } = github.context;
     if (!pr) {
-        return;
+        throw Error("PR details are absent. Please, use this Action only for PRs.");
     }
     return {
         number: pr.number,

@@ -2,7 +2,10 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
-const HEADER_PLACEHOLDER = "%headbranch%";
+// TODO: replace all 'any' types
+// TODO: add tests
+
+const HEAD_BRANCH_PLACEHOLDER = "%headbranch%";
 
 (async function main() {
   try {
@@ -13,36 +16,57 @@ const HEADER_PLACEHOLDER = "%headbranch%";
     core.info(`PR Details: ${JSON.stringify(details, null, 2)}`);
     core.info(`Inputs: ${JSON.stringify(inputs, null, 2)}`);
 
+    const matchedHeaderStr = getMatch(
+      details.baseBranchName,
+      inputs.headBranchRegex,
+      inputs.shouldFailOnMismatch
+    );
+
     if (inputs.titleTemplate) {
+      const injectedStr =
+        inputs.titleTemplate.includes(HEAD_BRANCH_PLACEHOLDER) && matchedHeaderStr
+          ? inputs.titleTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
+          : inputs.titleTemplate;
+
+      request.setTitle(injectedStr.concat(details?.title));
+    }
+    if (inputs.bodyTemplate) {
+      const injectedStr =
+        inputs.bodyTemplate.includes(HEAD_BRANCH_PLACEHOLDER) && matchedHeaderStr
+          ? inputs.bodyTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
+          : inputs.bodyTemplate;
+
+      request.setBody(injectedStr.concat(details?.body));
+    }
+
+    if (inputs.bodyTemplate) {
       const matchedHeaderStr = getMatch(
-        details?.baseBranchName,
+        details.baseBranchName,
         inputs.headBranchRegex,
         inputs.shouldFailOnMismatch
       );
       const injectedStr = matchedHeaderStr
-        ? inputs.titleTemplate.replace(HEADER_PLACEHOLDER, matchedHeaderStr)
+        ? inputs.titleTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
         : "";
 
       request.setTitle(injectedStr.concat(details?.title));
-      core.info(
-        `trail: ${injectedStr}, ${matchedHeaderStr}, ${injectedStr.concat(
-          details?.title
-        )}, ${request.build()}`
-      );
     }
 
-    const octokit = github.getOctokit(inputs.token);
-    core.info(`Request: ${JSON.stringify(request.build(), null, 2)}`);
-    const response = await octokit.rest.pulls.update(request.build());
-
-    core.info(`Response: ${response.status}`);
-    if (response.status !== 200) {
-      core.error("Updating the pull request has failed");
-    }
+    await updatePR(inputs.token, request.build());
   } catch (error: any) {
     core.setFailed(error?.message);
   }
 })();
+
+async function updatePR(token: string, payload: any) {
+  const octokit = github.getOctokit(token);
+  const response = await octokit.rest.pulls.update(payload);
+
+  core.info(`Response: ${response.status}`);
+  if (response.status !== 200) {
+    core.error("Updating the pull request has failed");
+  }
+}
 
 function getRequestBuilder() {
   const request: any = {
@@ -54,6 +78,10 @@ function getRequestBuilder() {
   const obj = {
     setTitle: (title: string) => {
       request.title = title;
+      return obj;
+    },
+    setBody: (body: string) => {
+      request.body = body;
       return obj;
     },
     build: () => request,
@@ -94,7 +122,7 @@ function getPRDetails() {
   } = github.context;
 
   if (!pr) {
-    return;
+    throw Error("PR details are absent. Please, use this Action only for PRs.");
   }
 
   return {
