@@ -8,13 +8,6 @@ import * as github from "@actions/github";
     const inputs = getInputs();
     core.info(`PR Details: ${JSON.stringify(details, null, 2)}`);
     core.info(`Inputs: ${JSON.stringify(inputs, null, 2)}`);
-    core.info(
-      `test:
-    ${inputs.shouldFailOnMismatch === undefined},
-    ${inputs.shouldFailOnMismatch === null},
-    ${(inputs.shouldFailOnMismatch as any) === false},
-    ${inputs.shouldFailOnMismatch === ""}`
-    );
   } catch (error: any) {
     core.setFailed(error?.message);
   }
@@ -23,7 +16,7 @@ import * as github from "@actions/github";
 function getInputs() {
   return {
     token: core.getInput("repo-token"),
-    shouldFailOnMismatch: core.getInput("fail-on-pattern-mismatch"),
+    shouldFailOnMismatch: !!core.getInput("fail-on-pattern-mismatch"),
     headBranchRegex: core.getInput("head-branch-regex"),
     titleTemplate: core.getInput("title-template"),
     bodyTemplate: core.getInput("body-template"),
