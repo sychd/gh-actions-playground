@@ -17,3 +17,4 @@ jobs:
         with:
           repo-token: "${{ github.token }}"
           head-branch-regex: "(CW|cw)-[0-9]+"
+          title-template: "[%headbranch%] "
