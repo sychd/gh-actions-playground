@@ -6,9 +6,15 @@ import * as github from "@actions/github";
   try {
     const details = getPRDetails();
     const inputs = getInputs();
-    core.info(`PR Details: ${JSON.stringify(details)}`);
-    core.info(`Inputs: ${JSON.stringify(inputs)}`);
-
+    core.info(`PR Details: ${JSON.stringify(details, null, 2)}`);
+    core.info(`Inputs: ${JSON.stringify(inputs, null, 2)}`);
+    core.info(
+      `test:
+    ${inputs.shouldFailOnMismatch === undefined},
+    ${inputs.shouldFailOnMismatch === null},
+    ${(inputs.shouldFailOnMismatch as any) === false},
+    ${inputs.shouldFailOnMismatch === ""}`
+    );
   } catch (error: any) {
     core.setFailed(error?.message);
   }
