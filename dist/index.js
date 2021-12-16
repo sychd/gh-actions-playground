@@ -8278,6 +8278,25 @@ function wrappy (fn, cb) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8288,24 +8307,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
-core.debug('hello -1');
+const core = __importStar(__nccwpck_require__(2186)); // some build issues with straight default import so aliases used
+const github = __importStar(__nccwpck_require__(5438)); // some build issues with straight default import so aliases used
+const utils_1 = __nccwpck_require__(3030);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        core.debug('hello 0');
+        const token = core.getInput("repo-token");
+        const { owner, repo } = github.context.repo;
+        const prNumber = getPrNumber();
+        console.log(core, 'hello');
+        if (!prNumber) {
+            core.setFailed("Could not get pull request number from context");
+        }
+        const octokit = (0, utils_1.getOctokitOptions)(token);
+        const response = yield octokit.pulls.get({
+            owner: owner,
+            repo: repo,
+            pull_number: prNumber,
+        });
+        console.log({ branchName: response.data.head.ref });
         // `who-to-greet` input defined in action metadata file
-        const nameToGreet = core.getInput('who-to-greet');
+        const nameToGreet = core.getInput("who-to-greet");
         console.log(`Hello ${nameToGreet}!`);
-        const time = (new Date()).toTimeString();
+        const time = new Date().toTimeString();
         core.setOutput("time", time);
         // Get the JSON webhook payload for the event that triggered the workflow
         const payload = JSON.stringify(github.context.payload, undefined, 2);
         console.log(`The event payload: ${payload}`);
     }
     catch (error) {
-        core.debug('hello 1');
-        core.setFailed(error.message);
+        console.log(132, error);
+        core.setFailed(error === null || error === void 0 ? void 0 : error.message);
     }
 }))();
 function getPrNumber() {
