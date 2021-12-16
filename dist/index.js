@@ -8316,13 +8316,16 @@ const HEADER_PLACEHOLDER = "%headbranch%";
         try {
             const details = getPRDetails();
             const inputs = getInputs();
+            const request = getRequestBuilder();
             core.info(`PR Details: ${JSON.stringify(details, null, 2)}`);
             core.info(`Inputs: ${JSON.stringify(inputs, null, 2)}`);
-            const request = getRequestBuilder();
             if (inputs.titleTemplate) {
                 const matchedHeaderStr = getMatch(details === null || details === void 0 ? void 0 : details.baseBranchName, inputs.headBranchRegex, inputs.shouldFailOnMismatch);
-                const injectedStr = inputs.titleTemplate.replace(HEADER_PLACEHOLDER, matchedHeaderStr).trim();
-                request.setTitle(injectedStr ? injectedStr.concat(details === null || details === void 0 ? void 0 : details.title) : details === null || details === void 0 ? void 0 : details.title);
+                const injectedStr = matchedHeaderStr
+                    ? inputs.titleTemplate.replace(HEADER_PLACEHOLDER, matchedHeaderStr)
+                    : "";
+                request.setTitle(injectedStr.concat(details === null || details === void 0 ? void 0 : details.title));
+                core.info(`trail: ${injectedStr}, ${matchedHeaderStr}, ${injectedStr.concat(details === null || details === void 0 ? void 0 : details.title)}, ${request.build()}`);
             }
             const octokit = github.getOctokit(inputs.token);
             core.info(`Request: ${JSON.stringify(request.build(), null, 2)}`);
