@@ -8332,14 +8332,7 @@ const HEAD_BRANCH_PLACEHOLDER = "%headbranch%";
                 const injectedStr = inputs.bodyTemplate.includes(HEAD_BRANCH_PLACEHOLDER) && matchedHeaderStr
                     ? inputs.bodyTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
                     : inputs.bodyTemplate;
-                request.setBody(injectedStr.concat(details === null || details === void 0 ? void 0 : details.body));
-            }
-            if (inputs.bodyTemplate) {
-                const matchedHeaderStr = getMatch(details.baseBranchName, inputs.headBranchRegex, inputs.shouldFailOnMismatch);
-                const injectedStr = matchedHeaderStr
-                    ? inputs.titleTemplate.replace(HEAD_BRANCH_PLACEHOLDER, matchedHeaderStr)
-                    : "";
-                request.setTitle(injectedStr.concat(details === null || details === void 0 ? void 0 : details.title));
+                request.setBody(injectedStr.concat("\n").concat(details === null || details === void 0 ? void 0 : details.body));
             }
             yield updatePR(inputs.token, request.build());
         }
