@@ -1,6 +1,6 @@
 import * as core from "@actions/core"; // some build issues with straight default import so aliases used
 import * as github from "@actions/github";  // some build issues with straight default import so aliases used
-import { getOctokitOptions } from "@actions/github/lib/utils";
+// import { getOctokitOptions } from "@actions/github/lib/utils";
 
 (async () => {
   try {
@@ -14,14 +14,14 @@ import { getOctokitOptions } from "@actions/github/lib/utils";
       core.setFailed("Could not get pull request number from context");
     }
 
-    const octokit = getOctokitOptions(token);
-
-    const response = await octokit.pulls.get({
-      owner: owner,
-      repo: repo,
-      pull_number: prNumber,
-    });
-    console.log({branchName: response.data.head.ref});
+    // const octokit = getOctokitOptions(token);
+    //
+    // const response = await octokit.pulls.get({
+    //   owner: owner,
+    //   repo: repo,
+    //   pull_number: prNumber,
+    // });
+    // console.log({branchName: response.data.head.ref});
 
     // `who-to-greet` input defined in action metadata file
     const nameToGreet = core.getInput("who-to-greet");

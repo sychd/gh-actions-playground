@@ -8309,7 +8309,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186)); // some build issues with straight default import so aliases used
 const github = __importStar(__nccwpck_require__(5438)); // some build issues with straight default import so aliases used
-const utils_1 = __nccwpck_require__(3030);
+// import { getOctokitOptions } from "@actions/github/lib/utils";
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const token = core.getInput("repo-token");
@@ -8320,13 +8320,14 @@ const utils_1 = __nccwpck_require__(3030);
         if (!prNumber) {
             core.setFailed("Could not get pull request number from context");
         }
-        const octokit = (0, utils_1.getOctokitOptions)(token);
-        const response = yield octokit.pulls.get({
-            owner: owner,
-            repo: repo,
-            pull_number: prNumber,
-        });
-        console.log({ branchName: response.data.head.ref });
+        // const octokit = getOctokitOptions(token);
+        //
+        // const response = await octokit.pulls.get({
+        //   owner: owner,
+        //   repo: repo,
+        //   pull_number: prNumber,
+        // });
+        // console.log({branchName: response.data.head.ref});
         // `who-to-greet` input defined in action metadata file
         const nameToGreet = core.getInput("who-to-greet");
         console.log(`Hello ${nameToGreet}!`);
