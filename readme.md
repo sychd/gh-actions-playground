@@ -1,5 +1,5 @@
 # Update PR action 
-Inspired from [GH action](https://github.com/tzkhan/pr-update-action)  created by [@tzkhan](https://github.com/tzkhan).
+Inspired by [GH action](https://github.com/tzkhan/pr-update-action)  created by [@tzkhan](https://github.com/tzkhan).
 
 This is a GitHub Action that updates a pull request with information extracted from head branch name.
 PR's body and title can be prefixed with desired text.
