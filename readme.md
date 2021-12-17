@@ -1,5 +1,5 @@
 #Update PR action 
-Inspired from [GH action](https://github.com/tzkhan/pr-update-action)  created by **[@tzkhan](https://github.com/tzkhan)**.
+Inspired from [GH action](https://github.com/tzkhan/pr-update-action)  created by [@tzkhan](https://github.com/tzkhan).
 
 This is a GitHub Action that updates a pull request with information extracted from head branch name.
 PR's body and title can be prefixed with desired text.
@@ -49,8 +49,9 @@ jobs:
 2. Run `npm run build` before commit
 3. Commit changes and modified by previous command `/dist` folder
 
-Before committing stick to these [recommendations ](https://docs.github.com/en/actions/creating-actions/about-custom-actions#using-release-management-for-actions):
-1. Use tags:
+Before committing stick to [these](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github) and [these recommendations ](https://docs.github.com/en/actions/creating-actions/about-custom-actions#using-release-management-for-actions):
+
+Use tags:
    ```
       git tag -a -m "Descrption of the release" v1.1
       git push --follow-tags
