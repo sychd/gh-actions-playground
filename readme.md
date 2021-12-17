@@ -1,20 +1,20 @@
-#Update PR action 
+# Update PR action 
 Inspired from [GH action](https://github.com/tzkhan/pr-update-action)  created by [@tzkhan](https://github.com/tzkhan).
 
 This is a GitHub Action that updates a pull request with information extracted from head branch name.
 PR's body and title can be prefixed with desired text.
 
-##Inputs
-###Required
+## Inputs
+### Required
 - repo-token: secret token to allow making calls to GitHub's rest API (for e.g. `${{ secrets.GITHUB_TOKEN }}`)
 
-###Optional
+### Optional
 - fail-on-pattern-mismatch: should action fail if regex didn't match
 - head-branch-regex: regex to match text from the head branch name
 - title-template: text template to update title with
 - body-template: text template to update body with
 
-##Example usage
+## Example usage
 Create a workflow yaml file (for e.g. `.github/workflows/update-pr.yml`). See [Creating a Workflow file](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/introduction-to-github-actions#create-an-example-workflow).
 
 ```yaml
