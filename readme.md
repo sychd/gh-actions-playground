@@ -18,7 +18,7 @@ PR's body and title can be prefixed with desired text.
 Create a workflow yaml file (for e.g. `.github/workflows/update-pr.yml`). See [Creating a Workflow file](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/introduction-to-github-actions#create-an-example-workflow).
 
 ```yaml
-name: PR updateer
+name: PR updater
 
 on:
   pull_request:
