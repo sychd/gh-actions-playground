@@ -16,9 +16,6 @@ inputs:
   body-template:
     description: 'Body (description) template where matched text from branch gets substituted in. Allowed tokens: %headbranch%'
     required: false
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
 runs:
   using: 'node12'
   main: 'dist/index.js'
